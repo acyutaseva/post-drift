@@ -2,12 +2,14 @@
 
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
-import { AppResolver } from './graphql/appResolver';
+import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import {
-  ApolloServerPluginCacheControl,
-  ApolloServerPluginLandingPageGraphQLPlaygroundOptions,
-} from 'apollo-server-core';
+import { PostModule } from './post/post.module';
+import { Options, PostgreSqlDriver } from '@mikro-orm/postgresql';
+import config from './mikro-orm.config';
+import { PostSeeder } from './seeder/post.seeder';
+
+
 
 
 @Module({
@@ -18,7 +20,6 @@ import {
 
           return {
               autoSchemaFile: true,
-              
               context: ({ req, res, extra }) => {
                   if (extra) {
                       return { req: extra.request, res };
@@ -28,13 +29,14 @@ import {
               },
           };
       },
-  }),
+    }),
+    MikroOrmModule.forRoot(config),
+    PostModule,
   ],
-  providers: [AppResolver],
+  providers: [],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-      // consumer.apply(graphqlUploadExpress()).forRoutes('graphql');
-      // consumer.apply(EventMiddleware).forRoutes('graphql');
+
   }
 }
