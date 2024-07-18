@@ -20,18 +20,18 @@ export class PostResolver {
     return this.postService.findById(id);
   }
 
-  @Mutation(() => Post)
-  async createPost(@Args('input') input: Partial<Post>): Promise<Post> {
-    return this.postService.create(input);
-  }
+  // @Mutation(() => Post)
+  // async createPost(@Args('input') input: Partial<Post>): Promise<Post> {
+  //   return this.postService.create(input);
+  // }
 
-  @Mutation(() => Post)
-  async updatePost(@Args('id') id: number, @Args('input') input: Partial<Post>): Promise<Post | null> {
-    return this.postService.update(id, input);
-  }
+  // @Mutation(() => Post)
+  // async updatePost(@Args('id') id: number, @Args('input') input: Partial<Post>): Promise<Post | null> {
+  //   return this.postService.update(id, input);
+  // }
 
-  @Mutation(() => Post)
-  async deletePost(@Args('id') id: number): Promise<boolean> {
-    return this.postService.delete(id);
-  }
+  // @Mutation(() => Post)
+  // async deletePost(@Args('id') id: number): Promise<boolean> {
+  //   return this.postService.delete(id);
+  // }
 }

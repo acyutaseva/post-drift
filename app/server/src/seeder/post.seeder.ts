@@ -1,7 +1,6 @@
-import { Seeder } from '@mikro-orm/seeder';
 import { EntityManager } from '@mikro-orm/core';
 import { Post } from '../post/post.entity';
-import { ConsoleLogger, Injectable } from '@nestjs/common';
+import {  Injectable } from '@nestjs/common';
 import { faker } from '@faker-js/faker';
 
 
@@ -13,8 +12,8 @@ export class PostSeeder  {
     const forkedEm= await em.fork();
     for (let i = 0; i < POST_COUNT; i++) {
       forkedEm.create(Post, {
-        title: faker.string.alphanumeric(100),
-        content: faker.string.alphanumeric(200),
+        title: faker.lorem.sentence({min: 2, max: 5 }),
+        content: faker.lorem.sentence({min: 5, max: 50 }),
         order: i + 1,
       });
     }
