@@ -1,5 +1,6 @@
 import { Entity, PrimaryKey, Property } from '@mikro-orm/core';
-import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { Field, InputType, Int, ObjectType } from '@nestjs/graphql';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 @Entity()
 @ObjectType()
@@ -26,7 +27,29 @@ export class Post {
 
   @Property()
   @Field(() => Int) 
-  order: number;
+  position: number;
 
   // todo : add user field to post
+}
+
+
+
+@InputType()
+export class UpdatePostInput {
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsString()
+  title?: string;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsString()
+  content?: string;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsNumber()
+  position?: number;
+
+  
 }
