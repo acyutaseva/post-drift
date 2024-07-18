@@ -19,7 +19,7 @@ export class PostService {
   async create(postData: Partial<Post>): Promise<Post> {
     const post = new Post();
     post.title = postData.title;
-    post.content=  postData.content;
+    post.content = postData.content;
     await this.em.persistAndFlush(post);
     return post;
   }
@@ -30,13 +30,12 @@ export class PostService {
       return null;
     }
 
-   
     const currentPosition = post.position;
     const newPosition = postData.position;
 
     if (currentPosition === newPosition) {
-          Object.assign(post, postData);
-         this.em.persist(post);
+      Object.assign(post, postData);
+      this.em.persist(post);
       return; // No change needed if the positions are the same
     }
 
@@ -44,21 +43,24 @@ export class PostService {
     await this.em.transactional(async (em) => {
       if (currentPosition < newPosition) {
         // Moving down
-        await em.getConnection().execute(
-          'UPDATE post SET position = position - 1 WHERE position > ? AND position <= ?',
-          [currentPosition, newPosition]
-        );
+        await em
+          .getConnection()
+          .execute(
+            'UPDATE post SET position = position - 1 WHERE position > ? AND position <= ?',
+            [currentPosition, newPosition],
+          );
       } else {
         // Moving up
-        await em.getConnection().execute(
-          'UPDATE post SET position = position + 1 WHERE position >= ? AND position < ?',
-          [newPosition, currentPosition]
-        );
+        await em
+          .getConnection()
+          .execute(
+            'UPDATE post SET position = position + 1 WHERE position >= ? AND position < ?',
+            [newPosition, currentPosition],
+          );
       }
       post.position = newPosition;
       await em.persistAndFlush(post);
     });
-
 
     return await this.em.findOne(Post, { id });
   }

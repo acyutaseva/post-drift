@@ -1,0 +1,25 @@
+{
+  "name": "post-drift",
+  "version": "1.0.0",
+  "prettier": {
+    "singleQuote": true,
+    "semi": true,
+    "tabWidth": 2,
+    "trailingComma": "all",
+    "printWidth": 120
+  },
+  "workspaces": [
+    "@app/client",
+    "@app/server"
+  ],
+  "scripts": {
+    "client": "cd \"@app/client\" && npm start",
+    "server": "cd \"@app/server\" && npm start",
+    "dev": "concurrently \"npm run client\" \"npm run server\"",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.tsx\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "prettier": "^2.4.1"
+  }
+}
