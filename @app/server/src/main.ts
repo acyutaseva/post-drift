@@ -6,12 +6,15 @@ import { createServer } from 'http';
 import { WebSocketServer } from 'ws';
 import { useServer } from 'graphql-ws/lib/use/ws';
 import { execute, subscribe } from 'graphql';
+import express from 'express';
+import { join } from 'path';
 
 async function bootstrap() {
   // Load environment variables from .env file
   dotenv.config();
   console.log('------------------ENV-------------', process.env);
   const app = await NestFactory.create(AppModule);
+  app.use(express.static(join(__dirname, '..', 'public')));
 
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors();
