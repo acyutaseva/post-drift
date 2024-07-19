@@ -51,6 +51,7 @@
     "uuid": "^10.0.0"
   },
   "devDependencies": {
+    "concurrently": "^8.2.2",
     "@nestjs/cli": "^10.0.0",
     "@nestjs/schematics": "^10.0.0",
     "@nestjs/testing": "^10.0.0",
