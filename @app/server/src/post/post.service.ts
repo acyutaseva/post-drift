@@ -8,8 +8,12 @@ import { Post, UpdatePostInput } from './post.entity';
 export class PostService {
   constructor(private readonly em: EntityManager) {}
 
-  async findAll(): Promise<Post[]> {
-    return this.em.find(Post, {}, { orderBy: { position: 'ASC' } });
+  async findAll(offset: number, limit: number): Promise<Post[]> {
+    return this.em.find(
+      Post,
+      {},
+      { orderBy: { position: 'ASC' }, offset, limit },
+    );
   }
 
   async findById(id: number): Promise<Post | null> {

@@ -3,20 +3,24 @@
 import { Resolver, Query, Mutation, Args, Info, Int } from '@nestjs/graphql';
 import { PostService } from '../post/post.service';
 import { Post, UpdatePostInput } from '../post/post.entity';
-import {GraphQLResolveInfo} from 'graphql'; 
+import { GraphQLResolveInfo } from 'graphql';
 
-
-@Resolver( () => Post)
+@Resolver(() => Post)
 export class PostResolver {
   constructor(private readonly postService: PostService) {}
 
   @Query(() => [Post])
-  async posts(@Info() info?: GraphQLResolveInfo):Promise<Post[]> {
-    return this.postService.findAll();
+  async posts(
+    @Args('offset', { type: () => Int }) offset: number,
+    @Args('limit', { type: () => Int }) limit: number,
+  ): Promise<Post[]> {
+    return this.postService.findAll(offset, limit);
   }
 
   @Query(() => Post)
-  async post( @Args('id', { type: () => Int }) id: number): Promise<Post | null> {
+  async post(
+    @Args('id', { type: () => Int }) id: number,
+  ): Promise<Post | null> {
     return this.postService.findById(id);
   }
 
@@ -26,14 +30,19 @@ export class PostResolver {
   // }
 
   @Mutation(() => Post)
-  async updatePost( @Args('id', { type: () => Int }) id: number, @Args('input') input: UpdatePostInput): Promise<Post | null> {
+  async updatePost(
+    @Args('id', { type: () => Int }) id: number,
+    @Args('input') input: UpdatePostInput,
+  ): Promise<Post | null> {
     return this.postService.update(id, input);
   }
 
   @Mutation(() => [Post])
-  async updatePostPosition( @Args('id', { type: () => Int }) id: number, @Args('input') input: UpdatePostInput): Promise<Post[]> {
-    await this.postService.update(id, input);
-    return this.postService.findAll();
+  async updatePostPosition(
+    @Args('id', { type: () => Int }) id: number,
+    @Args('input') input: UpdatePostInput,
+  ): Promise<Post> {
+    return await this.postService.update(id, input);
   }
 
   // @Mutation(() => Post)

@@ -1,14 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
-import { GET_POSTS, UPDATE_POST, UPDATE_POST_POSITION } from '../queries';
+import { GET_POSTS, UPDATE_POST } from '../queries';
 import Post from './Post';
-import { Container, Typography } from '@mui/material';
-import { DragDropContext, Droppable, Draggable, DropResult, DragStart, DragUpdate } from 'react-beautiful-dnd';
+import { CircularProgress, Container, Typography } from '@mui/material';
+import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
+import _ from 'lodash';
 
 const PostList: React.FC = () => {
-  const { loading, error, data } = useQuery(GET_POSTS);
-  const [updatePostPosition] = useMutation(UPDATE_POST_POSITION);
-  const [posts, setPosts] = useState([]);
+  const { data, loading, error, fetchMore } = useQuery(GET_POSTS, {
+    variables: { offset: 0, limit: 10 },
+  });
+  const [updatePost] = useMutation(UPDATE_POST);
+  const [posts, setPosts] = useState<any[]>([]);
+  const [fetching, setFetching] = useState(false);
 
   useEffect(() => {
     if (data) {
@@ -16,45 +20,79 @@ const PostList: React.FC = () => {
     }
   }, [data]);
 
-const onDragEnd = async (result: DropResult) => {
+  // Function to handle fetching more posts
+  const handleFetchMore = useCallback(() => {
+    if (loading || fetching) return;
+
+    setFetching(true);
+    fetchMore({
+      variables: {
+        offset: posts.length,
+        limit: 3,
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        setFetching(false);
+        if (!fetchMoreResult) return prev;
+        return {
+          posts: [...prev.posts, ...fetchMoreResult.posts],
+        };
+      },
+    });
+  }, [fetchMore, loading, fetching, posts.length]);
+
+  // Function to handle drag and drop end event
+  const onDragEnd = async (result: DropResult) => {
     if (!result.destination) return;
 
     const items = Array.from(posts);
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
-    
-    const data = await updatePostPosition({ variables: { id: reorderedItem["id"], input:{position: result.destination.index} } });
+    await updatePost({
+      variables: { id: reorderedItem.id, input: { position: result.destination.index } },
+    });
+    setPosts(items); // Update the state with reordered items
+  };
 
-    setPosts(data.data.updatePostPosition);
-};
+  // Add scroll event listener on component mount
+  useEffect(() => {
+    const handleScroll = _.debounce(() => {
+      const windowHeight = 'innerHeight' in window ? window.innerHeight : document.documentElement.offsetHeight;
+      const body = document.body;
+      const html = document.documentElement;
+      const docHeight = Math.max(
+        body.scrollHeight,
+        body.offsetHeight,
+        html.clientHeight,
+        html.scrollHeight,
+        html.offsetHeight,
+      );
+      const windowBottom = windowHeight + window.pageYOffset;
 
-const onDragStart = async (result: DragStart) => {
-    
-};
+      if (windowBottom >= docHeight - 1) {
+        handleFetchMore();
+      }
+    }, 300); // Debounce to 300ms
 
-const onDragUpdate = async (result: DragUpdate) => {
-    
-};
-if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [handleFetchMore]);
+
+  if (loading && !posts.length) return <CircularProgress />;
+  if (error) return <Typography color="error">{error.message}</Typography>;
 
   return (
     <Container>
       <Typography variant="h4" gutterBottom>
         Posts List
       </Typography>
-      <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart} onDragUpdate={onDragUpdate}>
+      <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="posts">
           {(provided) => (
             <div {...provided.droppableProps} ref={provided.innerRef}>
-              {posts.map((post:any, index) => (
-                <Draggable key={post.id} draggableId={"posts-"+post.id} index={index}>
+              {posts.map((post, index) => (
+                <Draggable key={post.id} draggableId={'posts-' + post.id} index={index}>
                   {(provided) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                    >
+                    <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
                       <Post post={post} />
                     </div>
                   )}
@@ -65,6 +103,7 @@ if (loading) return <p>Loading...</p>;
           )}
         </Droppable>
       </DragDropContext>
+      {loading && <CircularProgress />}
     </Container>
   );
 };
