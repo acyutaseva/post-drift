@@ -10,8 +10,7 @@ import { execute, subscribe } from 'graphql';
 async function bootstrap() {
   // Load environment variables from .env file
   dotenv.config();
-  console.log(process.env.MIKRO_ORM_DB_PASSWORD);
-  console.log(process.env.MIKRO_ORM_DB_NAME);
+  console.log('------------------ENV-------------', process.env);
   const app = await NestFactory.create(AppModule);
 
   app.useGlobalPipes(new ValidationPipe());
