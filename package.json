@@ -14,6 +14,8 @@
   ],
   "scripts": {
     "start": "concurrently \"npm run start:client\" \"npm run start:server\"",
+    "start:client": "cd @app/client && npm start",
+    "start:server": "cd @app/server && npm start",
     "client": "cd \"@app/client\" && npm start",
     "server": "cd \"@app/server\" && npm start",
     "dev": "concurrently \"npm run client\" \"npm run server\"",
