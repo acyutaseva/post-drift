@@ -41,10 +41,13 @@
     "class-validator": "^0.14.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
+    "graphql": "^16.9.0",
+    "graphql-subscriptions": "^2.0.0",
     "mikro-orm": "^6.2.9",
     "pg": "^8.12.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
+    "type-graphql": "^2.0.0-rc.2",
     "uuid": "^10.0.0"
   },
   "devDependencies": {

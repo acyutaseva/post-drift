@@ -12,14 +12,14 @@ export const GET_POSTS = gql`
 `;
 
 export const UPDATE_POST_POSITION = gql`
-mutation UpdatePostPosition($id: Int!, $input: UpdatePostInput!) {
+  mutation UpdatePostPosition($id: Int!, $input: UpdatePostInput!) {
     updatePostPosition(id: $id, input: $input) {
-        id
-        title
-        content
-      }
+      id
+      title
+      content
     }
-  `;
+  }
+`;
 
 export const UPDATE_POST = gql`
   mutation UpdatePost($id: Int!, $input: UpdatePostInput!) {
@@ -31,3 +31,13 @@ export const UPDATE_POST = gql`
   }
 `;
 
+export const POST_POSITION_CHANGED = gql`
+  subscription {
+    postPositionChanged {
+      id
+      title
+      content
+      position
+    }
+  }
+`;

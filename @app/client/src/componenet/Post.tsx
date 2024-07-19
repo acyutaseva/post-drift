@@ -10,7 +10,7 @@ interface PostProps {
 }
 
 const Post: React.FC<PostProps> = ({ post }) => (
-  <Card style={{ marginBottom: '10px' }}>
+  <Card style={{ marginBottom: '10px' }} sx={{ transform: 'scale(0.8)' }}>
     <CardContent>
       <Typography variant="h5">{post.title}</Typography>
       <Typography variant="body2">{post.content}</Typography>

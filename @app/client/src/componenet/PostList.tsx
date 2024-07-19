@@ -1,16 +1,18 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { useQuery, useMutation } from '@apollo/client';
-import { GET_POSTS, UPDATE_POST } from '../queries';
+import { useQuery, useMutation, useSubscription } from '@apollo/client';
+import { GET_POSTS, UPDATE_POST, POST_POSITION_CHANGED } from '../queries';
 import Post from './Post';
 import { CircularProgress, Container, Typography } from '@mui/material';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import _ from 'lodash';
+import './PostList.css'; // Import the CSS file
 
 const PostList: React.FC = () => {
   const { data, loading, error, fetchMore } = useQuery(GET_POSTS, {
     variables: { offset: 0, limit: 10 },
   });
   const [updatePost] = useMutation(UPDATE_POST);
+
   const [posts, setPosts] = useState<any[]>([]);
   const [fetching, setFetching] = useState(false);
 
@@ -19,6 +21,23 @@ const PostList: React.FC = () => {
       setPosts(data.posts);
     }
   }, [data]);
+
+  // Handle the subscription for post position changes
+  useSubscription(POST_POSITION_CHANGED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      console.log('----------------------------', subscriptionData);
+      const { postPositionChanged } = subscriptionData.data;
+      setPosts((prevPosts) => {
+        const updatedPosts = [...prevPosts];
+        const index = updatedPosts.findIndex((post) => post.id === postPositionChanged.id);
+        if (index !== -1) {
+          updatedPosts[index].position = postPositionChanged.position;
+          updatedPosts.sort((a, b) => a.position - b.position);
+        }
+        return updatedPosts;
+      });
+    },
+  });
 
   // Function to handle fetching more posts
   const handleFetchMore = useCallback(() => {
@@ -81,8 +100,8 @@ const PostList: React.FC = () => {
   if (error) return <Typography color="error">{error.message}</Typography>;
 
   return (
-    <Container>
-      <Typography variant="h4" gutterBottom>
+    <Container style={{ marginTop: '80px' }}>
+      <Typography variant="h4" gutterBottom className="fixed-title">
         Posts List
       </Typography>
       <DragDropContext onDragEnd={onDragEnd}>

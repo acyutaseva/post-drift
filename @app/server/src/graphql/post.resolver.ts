@@ -1,9 +1,20 @@
 // src/post/post.resolver.ts
 
-import { Resolver, Query, Mutation, Args, Info, Int } from '@nestjs/graphql';
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Args,
+  Info,
+  Int,
+  Subscription,
+} from '@nestjs/graphql';
 import { PostService } from '../post/post.service';
 import { Post, UpdatePostInput } from '../post/post.entity';
 import { GraphQLResolveInfo } from 'graphql';
+import { PubSub } from 'graphql-subscriptions';
+
+const pubSub = new PubSub();
 
 @Resolver(() => Post)
 export class PostResolver {
@@ -34,7 +45,11 @@ export class PostResolver {
     @Args('id', { type: () => Int }) id: number,
     @Args('input') input: UpdatePostInput,
   ): Promise<Post | null> {
-    return this.postService.update(id, input);
+    const post = await this.postService.update(id, input);
+
+    pubSub.publish('postPositionChanged', post);
+
+    return post;
   }
 
   @Mutation(() => [Post])
@@ -49,4 +64,11 @@ export class PostResolver {
   // async deletePost(@Args('id') id: number): Promise<boolean> {
   //   return this.postService.delete(id);
   // }
+
+  @Subscription(() => [Post], {
+    resolve: (payload) => payload,
+  })
+  postPositionChanged() {
+    return pubSub.asyncIterator('postPositionChanged');
+  }
 }
