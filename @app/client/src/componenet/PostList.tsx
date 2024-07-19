@@ -106,11 +106,11 @@ const PostList: React.FC = () => {
       </Typography>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="posts">
-          {(provided) => (
+          {(provided: any) => (
             <div {...provided.droppableProps} ref={provided.innerRef}>
               {posts.map((post, index) => (
                 <Draggable key={post.id} draggableId={'posts-' + post.id} index={index}>
-                  {(provided) => (
+                  {(provided: any) => (
                     <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
                       <Post post={post} />
                     </div>
