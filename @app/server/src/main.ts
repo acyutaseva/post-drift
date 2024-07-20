@@ -14,7 +14,7 @@ async function bootstrap() {
   dotenv.config();
   console.log('------------------ENV-------------', process.env);
   const app = await NestFactory.create(AppModule);
-  app.use(express.static(join(__dirname, '..', 'public')));
+  // app.use(express.static(join(__dirname, '..', 'public')));
 
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors();

@@ -1,20 +1,20 @@
 services:
-  client:
-    build: ./@app/client
-    ports:
-      - '8080:80'
+  # client:
+  #   build: ./@app/client
+  #   ports:
+  #     - '8080:80'
 
-  server:
-    build: ./@app/server
-    ports:
-      - '4000:4000'
-    environment:
-      - DATABASE_URL=postgres://admin:admin@db:5432/postgres
-      - MIKRO_ORM_DB_HOST=postgres
-      - MIKRO_ORM_DB_PORT=5432
-      - MIKRO_ORM_DB_NAME=postgres
-      - MIKRO_ORM_DB_USER=admin
-      - MIKRO_ORM_DB_PASSWORD=admin
+  # server:
+  #   build: ./@app/server
+  #   ports:
+  #     - '4000:4000'
+  #   environment:
+  #     - DATABASE_URL=postgres://admin:admin@db:5432/postgres
+  #     - MIKRO_ORM_DB_HOST=postgres
+  #     - MIKRO_ORM_DB_PORT=5432
+  #     - MIKRO_ORM_DB_NAME=postgres
+  #     - MIKRO_ORM_DB_USER=admin
+  #     - MIKRO_ORM_DB_PASSWORD=admin
 
   postgres:
     image: postgres:latest
