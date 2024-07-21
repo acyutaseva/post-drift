@@ -5,6 +5,8 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { PostModule } from './post/post.module';
 import config from './mikro-orm.config';
 import { PubSub } from 'graphql-subscriptions';
+import { join } from 'path';
+import { PubSubModule } from './pubSub.module';
 
 const pubSub = new PubSub();
 
@@ -13,7 +15,8 @@ const pubSub = new PubSub();
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
       useFactory: async () => ({
-        autoSchemaFile: true,
+        autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+        installSubscriptionHandlers: true,
         subscriptions: {
           'graphql-ws': {
             path: '/graphql',
@@ -35,6 +38,7 @@ const pubSub = new PubSub();
       }),
     }),
     MikroOrmModule.forRoot(config),
+    PubSubModule,
     PostModule,
   ],
 })

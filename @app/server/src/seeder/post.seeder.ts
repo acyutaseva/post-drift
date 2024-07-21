@@ -8,9 +8,10 @@ export class PostSeeder {
   async run(em: EntityManager): Promise<void> {
     const POST_COUNT = 300;
     const forkedEm = await em.fork();
+    await forkedEm.nativeDelete(Post, {});
     for (let i = 0; i < POST_COUNT; i++) {
       forkedEm.create(Post, {
-        title: 'Initial Position[' + i + '] - ', // + faker.lorem.sentence({min: 2, max: 5 }),
+        title: faker.lorem.sentence({ min: 2, max: 5 }),
         content: faker.lorem.sentence({ min: 5, max: 50 }),
         position: i,
       });

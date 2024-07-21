@@ -12,7 +12,7 @@ import { join } from 'path';
 async function bootstrap() {
   // Load environment variables from .env file
   dotenv.config();
-  console.log('------------------ENV-------------', process.env);
+  
   const app = await NestFactory.create(AppModule);
   // app.use(express.static(join(__dirname, '..', 'public')));
 

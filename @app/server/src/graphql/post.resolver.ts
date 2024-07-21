@@ -11,14 +11,15 @@ import {
 } from '@nestjs/graphql';
 import { PostService } from '../post/post.service';
 import { Post, UpdatePostInput } from '../post/post.entity';
-import { GraphQLResolveInfo } from 'graphql';
 import { PubSub } from 'graphql-subscriptions';
-
-const pubSub = new PubSub();
+import { Inject } from '@nestjs/common';
 
 @Resolver(() => Post)
 export class PostResolver {
-  constructor(private readonly postService: PostService) {}
+  constructor(
+    private readonly postService: PostService,
+    @Inject('PUB_SUB') private pubSub: PubSub,
+  ) {}
 
   @Query(() => [Post])
   async posts(
@@ -43,7 +44,7 @@ export class PostResolver {
     const post = await this.postService.update(id, input);
 
     console.log('----------------- Publishing -----------------');
-    pubSub.publish('POST_POSITION_CHANGED', { postPositionChanged: post });
+    this.pubSub.publish('POST_POSITION_CHANGED', { postPositionChanged: post });
 
     return post;
   }
@@ -61,6 +62,6 @@ export class PostResolver {
   })
   postPositionChanged() {
     console.log('----------------- Subscription -----------------');
-    return pubSub.asyncIterator('POST_POSITION_CHANGED');
+    return this.pubSub.asyncIterator('POST_POSITION_CHANGED');
   }
 }

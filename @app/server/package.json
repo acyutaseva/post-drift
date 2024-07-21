@@ -34,7 +34,8 @@
     "@nestjs/common": "^10.0.0",
     "@nestjs/core": "^10.0.0",
     "@nestjs/graphql": "^12.2.0",
-    "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/platform-express": "^10.3.10",
+    "@nestjs/websockets": "^10.3.10",
     "apollo-server-core": "^3.13.0",
     "apollo-server-express": "^3.13.0",
     "class-transformer": "^0.5.1",
@@ -44,13 +45,15 @@
     "dotenv": "^16.4.5",
     "graphql": "^16.9.0",
     "graphql-subscriptions": "^2.0.0",
+    "graphql-tools": "^9.0.1",
     "graphql-ws": "^5.16.0",
     "mikro-orm": "^6.2.9",
     "pg": "^8.12.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "type-graphql": "^2.0.0-rc.2",
-    "uuid": "^10.0.0"
+    "uuid": "^10.0.0",
+    "ws": "^8.18.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",

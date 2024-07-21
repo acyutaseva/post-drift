@@ -101,8 +101,8 @@ const PostList: React.FC = () => {
 
   return (
     <Container style={{ marginTop: '80px' }}>
-      <Typography variant="h4" gutterBottom className="fixed-title">
-        Posts List
+      <Typography variant="h3" gutterBottom className="fixed-title">
+        Post List
       </Typography>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="posts">
