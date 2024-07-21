@@ -35,11 +35,6 @@ export class PostResolver {
     return this.postService.findById(id);
   }
 
-  // @Mutation(() => Post)
-  // async createPost(@Args('input') input: Partial<Post>): Promise<Post> {
-  //   return this.postService.create(input);
-  // }
-
   @Mutation(() => Post)
   async updatePost(
     @Args('id', { type: () => Int }) id: number,
@@ -47,7 +42,8 @@ export class PostResolver {
   ): Promise<Post | null> {
     const post = await this.postService.update(id, input);
 
-    pubSub.publish('postPositionChanged', post);
+    console.log('----------------- Publishing -----------------');
+    pubSub.publish('POST_POSITION_CHANGED', { postPositionChanged: post });
 
     return post;
   }
@@ -60,15 +56,11 @@ export class PostResolver {
     return await this.postService.update(id, input);
   }
 
-  // @Mutation(() => Post)
-  // async deletePost(@Args('id') id: number): Promise<boolean> {
-  //   return this.postService.delete(id);
-  // }
-
-  @Subscription(() => [Post], {
-    resolve: (payload) => payload,
+  @Subscription((returns) => Post, {
+    resolve: (value) => value,
   })
   postPositionChanged() {
-    return pubSub.asyncIterator('postPositionChanged');
+    console.log('----------------- Subscription -----------------');
+    return pubSub.asyncIterator('POST_POSITION_CHANGED');
   }
 }

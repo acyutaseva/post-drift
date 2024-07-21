@@ -44,6 +44,7 @@
     "dotenv": "^16.4.5",
     "graphql": "^16.9.0",
     "graphql-subscriptions": "^2.0.0",
+    "graphql-ws": "^5.16.0",
     "mikro-orm": "^6.2.9",
     "pg": "^8.12.0",
     "reflect-metadata": "^0.2.2",
